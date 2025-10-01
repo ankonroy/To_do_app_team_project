@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
   Req,
@@ -10,6 +11,12 @@ import { TodoService } from './todos.service';
 @Controller('api/todos')
 export class TodosController {
   constructor(private todoService: TodoService) {}
+
+  @Get()
+  async getTodos(@Req() req: Request) {
+    const userId = req.session.user._id;
+    return await this.todoService.getUserTodos(userId);
+  }
 
   @Post()
   async createTodo(

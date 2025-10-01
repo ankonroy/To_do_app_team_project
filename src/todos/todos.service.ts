@@ -7,6 +7,10 @@ import { Todo } from '../schemas/todo.schema';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
 
+  async getUserTodos(userId: string): Promise<Todo[]> {
+    return this.todoModel.find({ userId }).sort({ createdAt: -1 }).exec();
+  }
+
   async createTodo(
     userId: string,
     title: string,
