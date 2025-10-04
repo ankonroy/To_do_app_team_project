@@ -1,12 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, Render, Req } from '@nestjs/common';
+import type { Request } from 'express';
+import { TodoService } from './todos/todos.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
+  constructor(private todoService: TodoService) {}
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  root() {
+    return { message: 'Hello world!' };
+  }
+
+  @Get('todos')
+  @Render('todos')
+  todosPage(@Req() req: Request) {
+    return { user: req.session.user };
   }
 }
