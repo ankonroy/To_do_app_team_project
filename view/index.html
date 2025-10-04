@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App - Home</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Todo App - Home</title>
+<style>
         * {
             margin: 0;
             padding: 0;
@@ -145,57 +145,34 @@
                 font-size: 2.5rem;
             }
         }
-    </style>
-</head>
+    
 
-<body>
-    <header>
-        <div class="container">
-            <nav>
-                <div class="logo">TodoApp</div>
-                <ul class="nav-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="login">Login</a></li>
-                    <li><a href="register">Register</a></li>
-                    <li><a href="todos">My Todos</a></li>
-                    <li><a href="user">Profile</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+/* === Mobile Navigation (Hamburger) === */
+.hamburger{display:none;flex-direction:column;gap:6px;background:transparent;border:none;cursor:pointer}
+.hamburger span{display:block;width:26px;height:3px;background:#fff;border-radius:2px;transition:transform .3s ease,opacity .3s ease}
+.hamburger.active span:nth-child(1){transform:translateY(9px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:translateY(-9px) rotate(-45deg)}
 
-    <div class="container">
-        <section class="hero">
-            <h1>Organize Your Work & Life</h1>
-            <p>TodoApp helps you stay organized and perform your tasks faster. Create to-do lists, set reminders, and
-                track your progress all in one place.</p>
-            <a href="/register" class="btn">Get Started - It's Free</a>
-        </section>
-
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">✓</div>
-                <h3>Simple Task Management</h3>
-                <p>Easily add, edit, and complete tasks with our intuitive interface.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3>Secure Authentication</h3>
-                <p>Your data is safe with our secure user authentication system.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Responsive Design</h3>
-                <p>Access your todos from any device - desktop, tablet, or mobile.</p>
-            </div>
-        </section>
-    </div>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 TodoApp. All rights reserved.</p>
-        </div>
-    </footer>
-</body>
-
-</html>
+@media (max-width: 768px){
+  .hamburger{display:flex}
+  /* Hide desktop menu and show as dropdown panel */
+  .nav-links{
+    position:absolute;
+    right:16px;
+    left:16px;
+    top:64px;
+    display:none;
+    flex-direction:column;
+    gap:.75rem;
+    background:#111827; /* near-slate-900 */
+    padding:1rem 1.25rem;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    z-index:1000;
+  }
+  .nav-links.show{display:flex}
+  .nav-links a{color:#fff !important}
+  /* Keep grid sections readable on small screens where applicable */
+  .todo-container, .profile-container{grid-template-columns:1fr !important}
+}
