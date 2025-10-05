@@ -267,6 +267,74 @@
                 display: none;
             }
         }
+
+        /* === Mobile Navigation (Hamburger) === */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer
+        }
+
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transition: transform .3s ease, opacity .3s ease
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg)
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg)
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex
+            }
+
+            /* Hide desktop menu and show as dropdown panel */
+            .nav-links {
+                position: absolute;
+                right: 16px;
+                left: 16px;
+                top: 64px;
+                display: none;
+                flex-direction: column;
+                gap: .75rem;
+                background: #111827;
+                /* near-slate-900 */
+                padding: 1rem 1.25rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+                z-index: 1000;
+            }
+
+            .nav-links.show {
+                display: flex
+            }
+
+            .nav-links a {
+                color: #fff !important
+            }
+
+            /* Keep grid sections readable on small screens where applicable */
+            .todo-container,
+            .profile-container {
+                grid-template-columns: 1fr !important
+            }
+        }
     </style>
 </head>
 
@@ -275,12 +343,14 @@
         <div class="container">
             <nav>
                 <div class="logo">TodoApp</div>
+                <button aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle menu"
+                    class="hamburger"><span></span><span></span><span></span></button>
                 <ul class="nav-links">
                     <li><a href="/todos">Todos</a></li>
                     <li><a href="/user">Profile</a></li>
                     <li>
                         <!-- <form action="/logout" method="POST" class="logout-form"> -->
-                            <a href="/logout">Logout</a>
+                        <a href="/logout">Logout</a>
                         <!-- </form> -->
                     </li>
                 </ul>
@@ -290,9 +360,7 @@
 
     <div class="container">
         <div class="welcome">
-            <h1>Welcome to Your Todo List<% if (user && user.email) { %>, <%= user.email %>
-                        <% } %>
-            </h1>
+            <h1>Welcome to Your Todo List, user</h1>
             <p>Organize your tasks and boost your productivity</p>
         </div>
 
@@ -327,197 +395,32 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const API_BASE = '/api/todos';
-
-        class TodoApp {
-            constructor() {
-                this.todos = [];
-                this.currentFilter = 'all';
-                this.init();
-            }
-
-            async init() {
-                await this.loadTodos();
-                this.setupEventListeners();
-            }
-
-            async loadTodos() {
-                try {
-                    const response = await fetch(API_BASE, {
-                        credentials: 'include' // Important for session cookies
-                    });
-
-                    if (!response.ok) throw new Error('Failed to load todos');
-
-                    this.todos = await response.json();
-                    this.renderTodos();
-                } catch (error) {
-                    this.showError('Failed to load todos: ' + error.message);
-                }
-            }
-
-            async addTodo(title, description) {
-                try {
-                    const response = await fetch(API_BASE, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ title, description })
-                    });
-
-                    if (!response.ok) throw new Error('Failed to add todo');
-
-                    const newTodo = await response.json();
-                    this.todos.unshift(newTodo);
-                    this.renderTodos();
-                    return true;
-                } catch (error) {
-                    this.showError('Failed to add todo: ' + error.message);
-                    return false;
-                }
-            }
-
-            async toggleTodo(id) {
-                try {
-                    const todo = this.todos.find(t => t._id === id);
-                    const response = await fetch(`${API_BASE}/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({ completed: !todo.completed })
-                    });
-
-                    if (!response.ok) throw new Error('Failed to update todo');
-
-                    const updatedTodo = await response.json();
-                    const index = this.todos.findIndex(t => t._id === id);
-                    this.todos[index] = updatedTodo;
-                    this.renderTodos();
-                } catch (error) {
-                    this.showError('Failed to update todo: ' + error.message);
-                }
-            }
-
-            async deleteTodo(id) {
-                if (!confirm('Are you sure you want to delete this todo?')) return;
-
-                try {
-                    const response = await fetch(`${API_BASE}/${id}`, {
-                        method: 'DELETE',
-                        credentials: 'include'
-                    });
-
-                    if (!response.ok) throw new Error('Failed to delete todo');
-
-                    this.todos = this.todos.filter(todo => todo._id !== id);
-                    this.renderTodos();
-                } catch (error) {
-                    this.showError('Failed to delete todo: ' + error.message);
-                }
-            }
-
-            getFilteredTodos() {
-                switch (this.currentFilter) {
-                    case 'active':
-                        return this.todos.filter(todo => !todo.completed);
-                    case 'completed':
-                        return this.todos.filter(todo => todo.completed);
-                    default:
-                        return this.todos;
-                }
-            }
-
-            renderTodos() {
-                const container = document.getElementById('todosContainer');
-                const filteredTodos = this.getFilteredTodos();
-
-                if (filteredTodos.length === 0) {
-                    const message = this.currentFilter === 'all' ?
-                        'No todos yet. Add your first todo above!' :
-                        `No ${this.currentFilter} todos found.`;
-
-                    container.innerHTML = `<div class="empty-state">${message}</div>`;
-                    return;
-                }
-
-                container.innerHTML = filteredTodos.map(todo => `
-                    <div class="todo-item ${todo.completed ? 'completed' : ''}">
-                        <div class="todo-content">
-                            <div class="todo-title">${this.escapeHtml(todo.title)}</div>
-                            ${todo.description ? `<div class="todo-description">${this.escapeHtml(todo.description)}</div>` : ''}
-                        </div>
-                        <div class="todo-actions">
-                            <button class="btn btn-sm btn-complete" onclick="todoApp.toggleTodo('${todo._id}')">
-                                ${todo.completed ? 'Undo' : 'Complete'}
-                            </button>
-                            <button class="btn btn-sm btn-delete" onclick="todoApp.deleteTodo('${todo._id}')">
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            setupEventListeners() {
-                // Add todo form
-                document.getElementById('todoForm').addEventListener('submit', async (e) => {
-                    e.preventDefault();
-
-                    const title = document.getElementById('title').value.trim();
-                    const description = document.getElementById('description').value.trim();
-
-                    if (!title) {
-                        alert('Please enter a title');
-                        return;
-                    }
-
-                    const success = await this.addTodo(title, description);
-                    if (success) {
-                        document.getElementById('todoForm').reset();
-                    }
-                });
-
-                // Filter buttons
-                document.querySelectorAll('.filter-btn').forEach(button => {
-                    button.addEventListener('click', () => {
-                        document.querySelectorAll('.filter-btn').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        button.classList.add('active');
-                        this.currentFilter = button.dataset.filter;
-                        this.renderTodos();
-                    });
-                });
-            }
-
-            showError(message) {
-                const container = document.getElementById('todosContainer');
-                container.innerHTML = `<div class="error">${message}</div>`;
-                console.error(message);
-            }
-
-            escapeHtml(unsafe) {
-                return unsafe
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
-            }
-        }
-
-        // Initialize the app when DOM is loaded
-        let todoApp;
-        document.addEventListener('DOMContentLoaded', () => {
-            todoApp = new TodoApp();
-        });
-    </script>
 </body>
+
+<script>
+    // Mobile hamburger toggle
+    (function () {
+        const burger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.nav-links');
+        if (!burger || !menu) return;
+        function toggleMenu() {
+            const expanded = burger.getAttribute('aria-expanded') === 'true';
+            burger.setAttribute('aria-expanded', String(!expanded));
+            burger.classList.toggle('active');
+            menu.classList.toggle('show');
+        }
+        burger.addEventListener('click', toggleMenu);
+        // Close on link click (mobile UX)
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            if (menu.classList.contains('show')) toggleMenu();
+        }));
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !burger.contains(e.target) && menu.classList.contains('show')) {
+                toggleMenu();
+            }
+        });
+    })();
+</script>
 
 </html>
