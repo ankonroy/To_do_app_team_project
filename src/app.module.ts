@@ -8,12 +8,8 @@ import { Todo, TodoSchema } from './schemas/todo.schema';
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
-    MongooseModule.forFeature([
-
-      { name: Todo.name, schema: TodoSchema },
-    ]),
+    MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }]),
   ],
-
   controllers: [AppController, TodosController],
   providers: [TodoService],
 })

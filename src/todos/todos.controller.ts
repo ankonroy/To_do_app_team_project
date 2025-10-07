@@ -1,3 +1,4 @@
+import { Controller, Put, Body, Param } from '@nestjs/common';
 import {
   Controller,
   Get,
@@ -12,6 +13,12 @@ import { TodoService } from './todos.service';
 export class TodosController {
   constructor(private todoService: TodoService) {}
 
+  @Put(':id')
+  async updateTodo(
+    @Param('id') id: string,
+    @Body() body: { title?: string; description?: string; completed?: boolean },
+  ) {
+    return await this.todoService.updateTodo(id, body);
   @Get()
   async getTodos(@Req() req: Request) {
     const userId = req.session.user._id;
