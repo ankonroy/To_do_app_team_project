@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+
   @Post('login')
   async login(
     @Body() body: { email: string; password: string },
@@ -44,5 +45,29 @@ export class AuthController {
     }
   }
 
- 
+  @Post('register')
+  async register(
+    @Body() body: { email: string; password: string },
+    @Res() res: Response,
+  ) {
+    try {
+      // Check if passwords match
+      //   if (body.password !== body.confirmPassword) {
+      //       console.log("register user");
+      //     return res.render('register', {
+      //       error: 'Passwords do not match',
+      //       user: null,
+      //     });
+      //   }
+
+      // Register the user
+      await this.authService.register(body.email, body.password);
+      return res.redirect('/login');
+    } catch (error) {
+      return res.render('register', {
+        error: 'Registration failed. Email may already be in use.',
+        user: null,
+      });
+    }
+  }
 }
