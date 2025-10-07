@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Todo App - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffdd40;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: white;
+            margin: 2rem 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #6a11cb;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2575fc;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #6a11cb;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+
+        /* === Mobile Navigation (Hamburger) === */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer
+        }
+
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transition: transform .3s ease, opacity .3s ease
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg)
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg)
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex
+            }
+
+            /* Hide desktop menu and show as dropdown panel */
+            .nav-links {
+                position: absolute;
+                right: 16px;
+                left: 16px;
+                top: 64px;
+                display: none;
+                flex-direction: column;
+                gap: .75rem;
+                background: #111827;
+                /* near-slate-900 */
+                padding: 1rem 1.25rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+                z-index: 1000;
+            }
+
+            .nav-links.show {
+                display: flex
+            }
+
+            .nav-links a {
+                color: #fff !important
+            }
+
+            /* Keep grid sections readable on small screens where applicable */
+            .todo-container,
+            .profile-container {
+                grid-template-columns: 1fr !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">TodoApp</div>
+                <button aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle menu"
+                    class="hamburger"><span></span><span></span><span></span></button>
+                <ul class="nav-links" id="primary-navigation">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/todos">My Todos</a></li>
+                    <li><a href="/user">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <section class="hero">
+            <h1>Organize Your Work &amp; Life</h1>
+            <p>TodoApp helps you stay organized and perform your tasks faster. Create to-do lists, set reminders, and
+                track your progress all in one place.</p>
+            <a class="btn" href="/register">Get Started - It's Free</a>
+        </section>
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">✓</div>
+                <h3>Simple Task Management</h3>
+                <p>Easily add, edit, and complete tasks with our intuitive interface.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure Authentication</h3>
+                <p>Your data is safe with our secure user authentication system.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Responsive Design</h3>
+                <p>Access your todos from any device - desktop, tablet, or mobile.</p>
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="container">
+            <p>© 2023 TodoApp. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // Mobile hamburger toggle
+        (function () {
+            const burger = document.querySelector('.hamburger');
+            const menu = document.querySelector('.nav-links');
+            if (!burger || !menu) return;
+            function toggleMenu() {
+                const expanded = burger.getAttribute('aria-expanded') === 'true';
+                burger.setAttribute('aria-expanded', String(!expanded));
+                burger.classList.toggle('active');
+                menu.classList.toggle('show');
+            }
+            burger.addEventListener('click', toggleMenu);
+            // Close on link click (mobile UX)
+            menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                if (menu.classList.contains('show')) toggleMenu();
+            }));
+            // Close on outside click
+            document.addEventListener('click', (e) => {
+                if (!menu.contains(e.target) && !burger.contains(e.target) && menu.classList.contains('show')) {
+                    toggleMenu();
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
