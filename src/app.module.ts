@@ -9,13 +9,12 @@ import { Todo, TodoSchema } from './schemas/todo.schema';
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
     MongooseModule.forFeature([
-    //   { name: User.name, schema: UserSchema },
+
       { name: Todo.name, schema: TodoSchema },
     ]),
   ],
-//   controllers: [AppController, AuthController, TodosController],
+
   controllers: [AppController, TodosController],
   providers: [TodoService],
-//   providers: [AuthService, TodoService, SessionGuard],
 })
 export class AppModule {}
