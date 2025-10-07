@@ -6,6 +6,12 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Get('logout')
+  logout(@Req() req: Request, @Res() res: Response) {
+    req.session.destroy(() => {
+      res.redirect('/');
+    });
+  }
 
   @Post('login')
   async login(
