@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - My Todos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffdd40;
+        }
+
+        .logout-form {
+            display: inline;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            margin: 0;
+            text-decoration: underline;
+        }
+
+        .logout-btn:hover {
+            color: #ffdd40;
+        }
+
+        .welcome {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .todo-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .add-todo {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .todo-list {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2575fc;
+        }
+
+        .todo-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        .todo-content {
+            flex: 1;
+        }
+
+        .todo-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .todo-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .todo-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-complete {
+            background: #27ae60;
+        }
+
+        .btn-complete:hover {
+            background: #2ecc71;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: #f1f2f6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #6a11cb;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .error {
+            background: #ffeaa7;
+            color: #d63031;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .todo-container {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* === Mobile Navigation (Hamburger) === */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer
+        }
+
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 3px;
+            background: #fff;
+            border-radius: 2px;
+            transition: transform .3s ease, opacity .3s ease
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg)
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg)
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex
+            }
+
+            /* Hide desktop menu and show as dropdown panel */
+            .nav-links {
+                position: absolute;
+                right: 16px;
+                left: 16px;
+                top: 64px;
+                display: none;
+                flex-direction: column;
+                gap: .75rem;
+                background: #111827;
+                /* near-slate-900 */
+                padding: 1rem 1.25rem;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+                z-index: 1000;
+            }
+
+            .nav-links.show {
+                display: flex
+            }
+
+            .nav-links a {
+                color: #fff !important
+            }
+
+            /* Keep grid sections readable on small screens where applicable */
+            .todo-container,
+            .profile-container {
+                grid-template-columns: 1fr !important
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">TodoApp</div>
+                <button aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle menu"
+                    class="hamburger"><span></span><span></span><span></span></button>
+                <ul class="nav-links">
+                    <li><a href="/todos">Todos</a></li>
+                    <li><a href="/user">Profile</a></li>
+                    <li>
+                        <!-- <form action="/logout" method="POST" class="logout-form"> -->
+                        <a href="/logout">Logout</a>
+                        <!-- </form> -->
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Welcome to Your Todo List, user</h1>
+            <p>Organize your tasks and boost your productivity</p>
+        </div>
+
+        <div class="todo-container">
+            <div class="add-todo">
+                <h2>Add New Todo</h2>
+                <form id="todoForm">
+                    <div class="form-group">
+                        <label for="title">Title *</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Todo</button>
+                </form>
+            </div>
+
+            <div class="todo-list">
+                <h2>Your Todos</h2>
+
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                </div>
+
+                <div id="todosContainer">
+                    <p class="loading">Loading your todos...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    // Mobile hamburger toggle
+    (function () {
+        const burger = document.querySelector('.hamburger');
+        const menu = document.querySelector('.nav-links');
+        if (!burger || !menu) return;
+        function toggleMenu() {
+            const expanded = burger.getAttribute('aria-expanded') === 'true';
+            burger.setAttribute('aria-expanded', String(!expanded));
+            burger.classList.toggle('active');
+            menu.classList.toggle('show');
+        }
+        burger.addEventListener('click', toggleMenu);
+        // Close on link click (mobile UX)
+        menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            if (menu.classList.contains('show')) toggleMenu();
+        }));
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && !burger.contains(e.target) && menu.classList.contains('show')) {
+                toggleMenu();
+            }
+        });
+    })();
+</script>
+
+</html>
