@@ -7,6 +7,8 @@ import { Todo } from '../schemas/todo.schema';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
 
+  async deleteTodo(id: string): Promise<void> {
+    await this.todoModel.findByIdAndDelete(id).exec();
   async updateTodo(id: string, updates: Partial<Todo>): Promise<Todo | null> {
     return this.todoModel.findByIdAndUpdate(id, updates, { new: true }).exec();
   async getUserTodos(userId: string): Promise<Todo[]> {

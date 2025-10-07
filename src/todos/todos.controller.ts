@@ -1,3 +1,4 @@
+import { Controller, Delete, Param } from '@nestjs/common';
 import { Controller, Put, Body, Param } from '@nestjs/common';
 import {
   Controller,
@@ -13,6 +14,9 @@ import { TodoService } from './todos.service';
 export class TodosController {
   constructor(private todoService: TodoService) {}
 
+  @Delete(':id')
+  async deleteTodo(@Param('id') id: string) {
+    return await this.todoService.deleteTodo(id);
   @Put(':id')
   async updateTodo(
     @Param('id') id: string,
