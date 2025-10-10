@@ -6,10 +6,13 @@ import {
   Body,
   Req,
   Render,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './users.service';
+import { SessionGuard } from '../guards/session.guard';
 
 @Controller('user')
+@UseGuards(SessionGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

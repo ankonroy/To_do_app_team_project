@@ -1,28 +1,23 @@
-import { Controller, Delete, Param } from '@nestjs/common';
-import { Controller, Put, Body, Param } from '@nestjs/common';
 import {
   Controller,
   Get,
   Post,
+  Put,
+  Delete,
   Body,
+  Param,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
+import { SessionGuard } from '../guards/session.guard';
 import { TodoService } from './todos.service';
 
 @Controller('api/todos')
+@UseGuards(SessionGuard)
 export class TodosController {
   constructor(private todoService: TodoService) {}
 
-  @Delete(':id')
-  async deleteTodo(@Param('id') id: string) {
-    return await this.todoService.deleteTodo(id);
-  @Put(':id')
-  async updateTodo(
-    @Param('id') id: string,
-    @Body() body: { title?: string; description?: string; completed?: boolean },
-  ) {
-    return await this.todoService.updateTodo(id, body);
   @Get()
   async getTodos(@Req() req: Request) {
     const userId = req.session.user._id;
@@ -40,5 +35,18 @@ export class TodosController {
       body.title,
       body.description,
     );
+  }
+
+  @Put(':id')
+  async updateTodo(
+    @Param('id') id: string,
+    @Body() body: { title?: string; description?: string; completed?: boolean },
+  ) {
+    return await this.todoService.updateTodo(id, body);
+  }
+
+  @Delete(':id')
+  async deleteTodo(@Param('id') id: string) {
+    return await this.todoService.deleteTodo(id);
   }
 }

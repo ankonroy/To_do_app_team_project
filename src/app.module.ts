@@ -1,23 +1,25 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-
-@Module({
-  imports: [UsersModule],
-  controllers: [AppController],
-  providers: [AppService],
+import { AuthController } from './auth/auth.controller';
 import { TodosController } from './todos/todos.controller';
+import { AuthService } from './auth/auth.service';
 import { TodoService } from './todos/todos.service';
+import { User, UserSchema } from './schemas/user.schema';
 import { Todo, TodoSchema } from './schemas/todo.schema';
+import { SessionGuard } from './guards/session.guard';
+import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
-    MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }]),
+    MongooseModule.forRoot(process.env.DATABASE_STRING),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Todo.name, schema: TodoSchema },
+    ]),
+    UserModule,
   ],
-  controllers: [AppController, TodosController],
-  providers: [TodoService],
+  controllers: [AppController, AuthController, TodosController],
+  providers: [AuthService, TodoService, SessionGuard],
 })
 export class AppModule {}

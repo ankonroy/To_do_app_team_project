@@ -59,11 +59,14 @@ export class UserService {
         throw new UnauthorizedException('Current password is incorrect');
       }
 
-      user.password = await bcrypt.hash(updateData.newPassword, 10);
+      user.password = await bcrypt.hash(
+        updateData.newPassword,
+        process.env.PASS_SECRET,
+      );
     }
 
     await user.save();
-    return this.userModel.findById(userId).select('-password');
+    return await this.userModel.findById(userId).select('-password');
   }
 
   async deleteUser(userId: string, currentPassword: string): Promise<void> {
@@ -76,6 +79,7 @@ export class UserService {
       currentPassword,
       user.password,
     );
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Password is incorrect');
     }

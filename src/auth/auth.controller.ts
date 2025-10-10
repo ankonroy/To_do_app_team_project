@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, Res, Render, Get } from '@nestjs/common';
+import { Controller, Post, Body, Req, Res, Get } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 
@@ -28,22 +28,12 @@ export class AuthController {
         req.session.user = user;
         return res.redirect('/todos');
       } else {
-        // return res.render('login', {
-        //   error: 'Invalid credentials',
-        //   user: null,
-        // });
-        // console.log("Invalid credentials");
         return res.status(400).json({
           error: 'Invalid credentials',
           user: null,
         });
       }
     } catch (error) {
-      //   return res.render('login', {
-      //     error: 'An error occurred during login',
-      //     user: null,
-      //   });
-      //   console.log('accidental error');
       return res.status(400).json({
         error: 'An error occurred during login',
         user: null,
@@ -57,16 +47,6 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      // Check if passwords match
-      //   if (body.password !== body.confirmPassword) {
-      //       console.log("register user");
-      //     return res.render('register', {
-      //       error: 'Passwords do not match',
-      //       user: null,
-      //     });
-      //   }
-
-      // Register the user
       await this.authService.register(body.email, body.password);
       return res.redirect('/login');
     } catch (error) {

@@ -7,10 +7,6 @@ import { Todo } from '../schemas/todo.schema';
 export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<Todo>) {}
 
-  async deleteTodo(id: string): Promise<void> {
-    await this.todoModel.findByIdAndDelete(id).exec();
-  async updateTodo(id: string, updates: Partial<Todo>): Promise<Todo | null> {
-    return this.todoModel.findByIdAndUpdate(id, updates, { new: true }).exec();
   async getUserTodos(userId: string): Promise<Todo[]> {
     return this.todoModel.find({ userId }).sort({ createdAt: -1 }).exec();
   }
@@ -22,5 +18,13 @@ export class TodoService {
   ): Promise<Todo> {
     const todo = new this.todoModel({ userId, title, description });
     return todo.save();
+  }
+
+  async updateTodo(id: string, updates: Partial<Todo>): Promise<Todo | null> {
+    return this.todoModel.findByIdAndUpdate(id, updates, { new: true }).exec();
+  }
+
+  async deleteTodo(id: string): Promise<void> {
+    await this.todoModel.findByIdAndDelete(id).exec();
   }
 }
