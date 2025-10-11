@@ -61,7 +61,8 @@ export class UserService {
 
       user.password = await bcrypt.hash(
         updateData.newPassword,
-        process.env.PASS_SECRET,
+        // process.env.PASS_SECRET,
+        10,
       );
     }
 

@@ -12,7 +12,8 @@ import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(process.env.DATABASE_STRING),
+    MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
+    // MongooseModule.forRoot(process.env.DATABASE_STRING),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Todo.name, schema: TodoSchema },

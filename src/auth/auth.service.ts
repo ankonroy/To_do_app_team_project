@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
@@ -9,7 +9,7 @@ export class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async register(email: string, password: string): Promise<User> {
-    const hashedPassword = await bcrypt.hash(password, process.env.PASS_SECRET);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const user = new this.userModel({ email, password: hashedPassword });
     return user.save();
   }
